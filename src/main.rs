@@ -81,17 +81,11 @@ fn create_repos(client: Gitlab, repo_members: Vec<Vec<String>>, config: GitLabCo
     for i in 0..repo_members.len() {
         let group_or_student = repo_members.get(i).unwrap();
 
-        let project_name = if group_or_student.len() == 1 {
-            format!(
-                "{0}-{1}-{2}",
-                config.group_name,
-                config.designation,
-                group_or_student.get(0).unwrap()
-            )
-        } else {
-            format!("{}-{}-g{}", config.group_name, config.designation, (i + 1))
-        };
+        if group_or_student.len() != 3 {
+            continue;
+        }
 
+        let project_name = format!("Team-{:02}", (i + 1));
         let gitlab_user_ids = convert_to_user_ids(&client, group_or_student);
         if gitlab_user_ids.is_empty() {
             println!("Unable to create project {project_name}; no gitlab users found");
